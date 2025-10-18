@@ -18,15 +18,15 @@ public class Otype {
      */
     public void execute(Machine machine, int opcode) {
         switch (opcode) {
-            case 6: // HALT
+            case 6: // HALT: Stop the simulation
                 machine.halt();
                 break;
 
-            case 7: // NOOP
-                // Do nothing
+            case 7: // NOOP: Do nothing, move to next instruction
                 break;
 
             default:
+                
                 System.err.println("Unknown O-type opcode: " + opcode);
                 machine.halt();
                 break;

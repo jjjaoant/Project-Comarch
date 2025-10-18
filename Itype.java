@@ -31,12 +31,13 @@ public class Itype {
         int[] reg = machine.getRegisters();
         int[] mem = machine.getMemory();
 
+        // Convert 16-bit offset to 32-bit and calculate memory address
         int offsetField = signExtend(offset);
         int memAddress = offsetField + reg[rs];
 
         switch (opcode) {
-            case 2: // LW
-                if (rt != 0) { // reg0 must remain 0
+            case 2: // LW: Load from memory into register rt
+                if (rt != 0) { // register 0 must remain 0
                     if (memAddress < 0 || memAddress >= mem.length) {
                         System.err.println("Invalid memory access at " + memAddress);
                         machine.halt();
@@ -46,7 +47,7 @@ public class Itype {
                 }
                 break;
 
-            case 3: // SW
+            case 3: // SW: Store from register rt into memory
                 if (memAddress < 0 || memAddress >= mem.length) {
                     System.err.println("Invalid memory access at " + memAddress);
                     machine.halt();
@@ -55,7 +56,7 @@ public class Itype {
                 mem[memAddress] = reg[rt];
                 break;
 
-            case 4: // BEQ
+            case 4: // BEQ: Branch if reg[rs] == reg[rt]
                 if (reg[rs] == reg[rt]) {
                     int newPc = machine.getPc() + 1 + offsetField;
                     machine.setNextPc(newPc);
@@ -63,6 +64,7 @@ public class Itype {
                 break;
 
             default:
+                // Invalid or unknown opcode — stop the machine
                 System.err.println("Unknown I-type opcode: " + opcode);
                 machine.halt();
                 break;

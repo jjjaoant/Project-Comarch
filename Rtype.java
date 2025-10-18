@@ -1,5 +1,5 @@
 public class Rtype {
-    // Singleton instance
+    // Singleton instance (only one shared instance is needed)
     private static Rtype instance;
 
     private Rtype() {}
@@ -35,6 +35,7 @@ public class Rtype {
                 break;
 
             default:
+                // Invalid or unknown opcode — stop the machine
                 System.err.println("Unknown R-type opcode: " + opcode);
                 machine.halt();
                 break;
