@@ -42,5 +42,5 @@ pos1    .fill   1
 neg1    .fill   -1
 pos16   .fill   16
 signBit .fill   -2147483648
-mcand   .fill   -32766
-mplier  .fill   -10383
+mcand   .fill   32766
+mplier  .fill   10383
