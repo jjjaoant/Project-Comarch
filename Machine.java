@@ -75,22 +75,38 @@ public class Machine {
         executed++;
     }
 
-    /** Fetch the instruction currently pointed by PC */
-    public int getInstruction() {
+     /**
+     * Fetches the instruction currently pointed to by PC.
+     *
+     * @return 32-bit machine instruction
+     */
+     public int getInstruction() {
         if (pc >= 0 && pc < MEMORY_SIZE) {
             return memory[pc];
         }
 
-        // If PC out of range, return HALT to stop safely
+        // Return HALT code to safely stop if PC is out of range
         return HALT_CODE;  
     }
 
     // --- Getters and Setters ---
+
+    /** @return memory array reference */
     public int[] getMemory() { return memory; }
+
+    /** @return registers array reference */
     public int[] getRegisters() { return registers; }
+
+    /** @return current program counter */
     public int getPc() { return pc; }
+
+    /** Sets the next program counter (used by instructions like BEQ, JALR) */
     public void setNextPc(int newPc) { nextPc = newPc; }
+
+    /** Halts the machine (triggered by HALT instruction). */
     public void halt() { halted = true; }
+
+    /** Sets total instruction count (used for printState). */
     public void setInstructionCount(int count) { instructionCount = count; }
 
     /**

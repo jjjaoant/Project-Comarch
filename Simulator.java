@@ -11,9 +11,15 @@ import java.util.List;
  *  - Loading the program into memory
  *  - Creating and running the Machine simulation
  */
-
 public class Simulator {
-
+    
+     /**
+     * Program entry point.
+     * Reads the input .obj file, loads machine code into memory,
+     * and starts the simulation.
+     *
+     * @param args Command-line arguments (expects one filename argument)
+     */
     public static void main(String[] args) {
         // Check if a file argument is provided                          
         if (args.length != 1) {                             

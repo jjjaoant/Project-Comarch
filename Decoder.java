@@ -18,12 +18,16 @@ public class Decoder {
 
     public Decoder() {}
 
-      /**
-     * Decode and execute one instruction.
-     * This method separates the instruction into fields (opcode, registers, offset)
-     * and dispatches execution to the appropriate type handler.
+    /**
+     * Decodes and executes one instruction from the machine.
+     * Steps:
+     *  1. Fetch current instruction
+     *  2. Extract opcode and operands using bit operations
+     *  3. Dispatch execution to the appropriate class
+     * 
+     * @param machine The current CPU state (contains PC, registers, memory)
      */
-    public void decode(Machine machine) {
+     public void decode(Machine machine) {
         // --- FETCH current instruction ---
         int instruction = machine.getInstruction();
 
