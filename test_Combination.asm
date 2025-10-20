@@ -2,8 +2,8 @@ pos1    .fill   1
 pos4    .fill   4
 neg4    .fill   -4
 
-n       .fill   0
-r       .fill   0
+n       .fill   7
+r       .fill   3
 
 combAddr .fill  comb
 stAddr  .fill   stack
