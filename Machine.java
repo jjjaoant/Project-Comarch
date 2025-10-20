@@ -1,18 +1,29 @@
+/**
+ * The Machine class represents the LC-2K CPU simulator.
+ * It contains:
+ *  - Memory (65536 words)
+ *  - Registers (8 general-purpose)
+ *  - Program Counter (PC)
+ *  - Instruction counter
+ *  - The Decoder (used to interpret instructions)
+ */
+
 public class Machine {
-    private static final int MEMORY_SIZE = 65536;
-    private static final int REGISTER_SIZE = 8;
-    private static final int HALT_CODE = 0x1C00000;
+    private static final int MEMORY_SIZE = 65536;  // 16-bit address space
+    private static final int REGISTER_SIZE = 8;    // 8 registers (R0–R7)
+    private static final int HALT_CODE = 0x1C00000; // used for invalid access safety
 
-    private final int[] memory;
-    private final int[] registers;
-    private int pc;              // Program Counter
-    private int nextPc;          // Next Program Counter
-    private int executed;        // Number of executed instructions
-    private int instructionCount;
-    private boolean halted;
+    private final int[] memory;     // main memory array
+    private final int[] registers;  // register file
+    private int pc;                 // current program counter
+    private int nextPc;             // current program counter
+    private int executed;           // number of executed instructions
+    private int instructionCount;   // number of instructions loaded from file
+    private boolean halted;         // flag that tells if the machine stopped
 
-    private final Decoder decoder;
-
+    private final Decoder decoder;  // instruction decoder
+    
+    /** Constructor: initializes memory, registers, and decoder */
     public Machine() {
         memory = new int[MEMORY_SIZE];
         registers = new int[REGISTER_SIZE];
@@ -22,53 +33,97 @@ public class Machine {
         halted = false;
         decoder = new Decoder();
     }
-
-    /** Run until HALT */
+  
+    /**
+     * Main simulation loop.
+     * Executes instructions until a HALT instruction is encountered.
+    */
     public void simulate() {
         while (!halted) {
+            // Print the state before executing current instruction
             printState();
+
+            // Execute one instruction (Fetch–Decode–Execute)
             step();
         }
+
+        // After HALT, print the final state
         printState();
     }
 
-    /** Execute one instruction */
+     /**
+     * Executes one step of simulation (one instruction).
+     * This function performs:
+     *  1. Fetch: get current instruction from memory[pc]
+     *  2. Decode: interpret instruction via Decoder
+     *  3. Execute: perform the operation
+     */
     private void step() {
+        // Prepare next PC (normally PC+1)
         nextPc = (pc + 1) % MEMORY_SIZE;
+
+        // Decode and execute the current instruction
         decoder.decode(this);
-        registers[0] = 0;   // register[0] must always remain 0
+
+        // Register 0 must always stay zero (hardware constraint)
+        registers[0] = 0; 
+
+        // Move to the next PC
         pc = nextPc;
+
+        // Count executed instructions
         executed++;
     }
 
-    /** Read current instruction */
-    public int getInstruction() {
+     /**
+     * Fetches the instruction currently pointed to by PC.
+     *
+     * @return 32-bit machine instruction
+     */
+     public int getInstruction() {
         if (pc >= 0 && pc < MEMORY_SIZE) {
             return memory[pc];
         }
-        return HALT_CODE;   // stop if accessing invalid memory
+
+        // Return HALT code to safely stop if PC is out of range
+        return HALT_CODE;  
     }
 
-    // Getters
+    // --- Getters and Setters ---
+
+    /** @return memory array reference */
     public int[] getMemory() { return memory; }
+
+    /** @return registers array reference */
     public int[] getRegisters() { return registers; }
+
+    /** @return current program counter */
     public int getPc() { return pc; }
 
-    // Setters
+    /** Sets the next program counter (used by instructions like BEQ, JALR) */
     public void setNextPc(int newPc) { nextPc = newPc; }
+
+    /** Halts the machine (triggered by HALT instruction). */
     public void halt() { halted = true; }
+
+    /** Sets total instruction count (used for printState). */
     public void setInstructionCount(int count) { instructionCount = count; }
 
-    /** Print state of the machine */
+    /**
+     * Prints the current state of the entire machine.
+     * This is required by the project spec (print before each instruction).
+     */
     private void printState() {
         StringBuilder sb = new StringBuilder();
-
+        
+        // If machine halted, print summary first
         if (halted) {
             sb.append("machine halted\n")
               .append("total of ").append(executed).append(" instructions executed\n")
               .append("final state of machine:\n");
         }
-
+       
+        // Print PC, memory, and registers
         sb.append("@@@\nstate:\n")
           .append("\tpc ").append(pc).append('\n')
           .append("\tmemory:\n");
